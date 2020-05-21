@@ -6,8 +6,6 @@ require 'rack';
 require 'optparse'
 require 'pry'
 
-# require_relative '../dspace'
-
 module Statistics
 
   class Community
@@ -88,8 +86,7 @@ module Statistics
       end
       outfile.puts "# ";
 
-      # @community_query.each do |hsh|
-      [{ nope: 'nope'}].each do |hsh|
+      [{ total: 'total'}].each do |hsh|
         community_query = hsh['query']
         community_name = hsh['name'];
 
@@ -129,15 +126,8 @@ module Statistics
             end
           end
           colnames.each do |col|
-            # collection = Collection.find(@context, col.to_i)
-            collection = nil
-            if (collection.nil?) then
-              collection_name = "COLLECTION.#{col}"
-              collection_handle = "NULL";
-            else
-              collection_name = collection.getName().gsub(/\s+/, ' ');
-              collection_handle = collection.getHandle();
-            end
+            collection_name = "COLLECTION.#{col}"
+            collection_handle = "NULL";
             naccess = @time_ranges.collect { |range| colstats[range][col] }
             outfile.puts "#{community_name}\t#{collection}\t#{collection_handle}\t#{key}\t#{naccess.join("\t")}\t#{collection_name}";
           end
@@ -211,7 +201,6 @@ module Statistics
       end
       query = query + "&q=" + Rack::Utils.escape('NOT epersonid:["" TO *]');
 
-      # props = {"-isBot" => "true"}.merge(community).merge(type).merge(@exclude_ips);
       props = {"-isBot" => "true"}.merge(type).merge(@exclude_ips);
       props.each do |k, v|
         query = "#{query}+#{k}:#{Rack::Utils.escape(v)}";
